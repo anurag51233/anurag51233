@@ -1,0 +1,200 @@
+#include<stdio.h>
+#include<math.h>
+#include<conio.h>
+#include<windows.h>
+#include <stdlib.h>
+
+
+char Move();
+void Start();
+void Update();
+void Tail(int x,int y);
+void Render(char *scr);
+int clamp(int n, int max, int min);
+
+
+char screen[50][100] = {0};    // Here (x,y) = (100,50)
+
+int main ()
+{
+    Start();
+    Update();
+
+}
+
+void Start()
+{
+    for(int j = 0;j<30; j++)    
+    {
+        for(int i = 0; i <100 ; i++)
+        {
+            screen[j][i] = ' ';
+
+        }
+
+    }
+
+    
+    
+
+}
+
+void Update()
+{
+    int x,y;
+    int x1=0;
+    int y1=0;
+    int px[20] = {0};
+    int py[20] = {0};
+    int count = 0;
+    int Ctail = 10;
+
+    x=50;
+    y=15;
+
+    for(;;)
+    {   
+    
+    //----CODE----//
+        
+        if(count >= Ctail)
+        {
+            count = 0;
+
+        }
+        else{
+            count++;
+        }
+  
+
+        screen[py[count]][px[count]] = ' ';
+
+        px[count] = x;
+        py[count] = y;
+
+        //Type 1
+        switch(Move())
+        {
+
+            case 'd':
+            x1 = 3;        //for side move only add y1 = 0;
+            
+            break;
+
+            case 'a':
+            x1 = -3;
+            break;  
+    
+            case 'w':
+            y1 = -1;
+            break;
+
+            case 's':
+            y1 = 1;
+
+            break;  
+       
+   
+       
+        }
+  
+        x += x1;
+        y += y1;
+
+        x = clamp(x,99,0);   //Out
+        y = clamp(y,29,0);  //Out
+        screen[y][x] = 'o';
+
+        
+
+
+
+    //---- LOOP SCREEN ----//
+
+        Render(*screen);   // Not passing address because of puts function error
+        Sleep(50);
+        system("cls");
+    }   
+
+}
+
+
+
+
+/// ----- LIBRARY ------ ///
+
+// For rendering screen 
+void Render(char *scr)
+{ 
+    //for breaking the line and for the border
+    for(int j = 0;j<30; j++)    
+    {
+        // Border
+        for(int i = 0; i <100 ; i++)
+        {
+
+            if(i == 99)
+            {
+                *(scr +j*100 + i-1) = 178; //scr[j][i-1] = '@';   //boarder of the line 
+                *(scr +j*100 + i) = '\n';
+
+            }
+            else if(i == 0 || j == 0 || j==29)
+            {
+                *(scr +j*100 + i) = 178;
+            }
+            
+        }
+
+    }
+    
+    puts(scr);
+     //puts("\n");
+}
+
+
+// Input method
+char Move(){
+        
+    if(kbhit()) 
+    {
+        switch(getch())
+        {
+
+            case 'd':
+            return 'd';
+            break;
+
+            case 'a':
+            return 'a';
+            break;  
+    
+            case 'w':
+            return 'w';
+            break;
+
+            case 's':
+            return 's';
+            break;  
+       
+   
+       
+        }
+    }
+
+    return ' ';
+}
+
+int clamp(int n,int max, int min)
+{
+    if(n>max)
+    {
+        return max;
+    }
+    else if (n<min)
+    {
+        return min;
+    }
+    return n;
+    
+}
