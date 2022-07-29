@@ -2,21 +2,33 @@
 #include<math.h>
 #include<conio.h>
 #include<windows.h>
-
 #include <stdlib.h>
+
 
 char Move();
 void Start();
 void Update();
 void Tail(int x,int y);
 void Render(char *scr);
+void points();
+
+
 int clamp(int n, int max, int min);
+int randomRange(int max, int min );
+void MaximizeOutputWindow(void);
 
 
-char screen[50][100] = {0};    // Here (x,y) = (100,50)
+char screen[50][100] = {0};    // Here (x,y) = (100,50)  snake screen = (100,30)
+int score = 0;
+
+
+
+
 
 int main ()
 {
+    MaximizeOutputWindow();
+
     Start();
     Update();
 
@@ -31,28 +43,27 @@ void Start()
             screen[j][i] = ' ';
 
         }
-
     }
-
-    
-    
-
+    Render(*screen);
 }
+
 
 void Update()
 {
     int x,y;
-    int x1=0;
+    int x1=2;
     int y1=0;
     int px[20] = {0};
     int py[20] = {0};
     int count = 0;
-    int Ctail = 10;
+    int Ctail = 1;
 
     x=50;
     y=15;
 
-    for(;;)
+    points();         //  initial point   //
+
+    for(;;)       ///----inifinite loop ----///
     {   
     
     //----CODE----//
@@ -67,30 +78,49 @@ void Update()
         }
   
 
-        screen[py[count]][px[count]] = ' ';
+        screen[py[count]][px[count]] = ' '; //  making tail disappearing  
 
         px[count] = x;
         py[count] = y;
 
         //Type 1
+
         switch(Move())
         {
 
             case 'd':
-            x1 = 3;        //for side move only add y1 = 0;
-            
+            if(x1 != -2)            //  added if condition to avoid making a move in opposite direction 
+            {                       //  when opposite key is pressed
+                x1 = 2;        //for side move only add y1 = 0;  && x = 0;
+                y1 = 0;
+                
+            }
+
             break;
 
             case 'a':
-            x1 = -3;
+            if(x1 != 2)
+            {
+                x1 = -2;
+                y1 = 0;
+            }
+
             break;  
     
             case 'w':
-            y1 = -1;
+            if(y1 != 1)
+            {
+                y1 = -1;
+                x1 = 0;
+            }
             break;
 
             case 's':
-            y1 = 1;
+            if(y1 != -1)
+            {
+                y1 = 1;
+                x1 = 0;
+            }
 
             break;  
        
@@ -101,9 +131,25 @@ void Update()
         x += x1;
         y += y1;
 
-        x = clamp(x,99,0);   //Out
-        y = clamp(y,29,0);  //Out
-        screen[y][x] = 'o';
+        x = clamp(x,99,0);                  //Out
+        y = clamp(y,29,0);                  //Out
+
+        if(screen[y][x] == '$' )            //game over
+        {       
+            score++;                        //increase score
+            Ctail++;        
+            screen[y][x] == ' ';        
+            points();       
+            screen[y][x] = 'o';             //new point
+        }
+        else if(screen[y][x] != ' ')
+        {
+            exit(1);
+        }
+        else
+        {
+            screen[y][x] = 'o';
+        }
 
         
 
@@ -123,33 +169,83 @@ void Update()
 
 /// ----- LIBRARY ------ ///
 
-// For rendering screen 
+// For rendering screen and boarders
 void Render(char *scr)
 { 
-    //for breaking the line and for the border
+
+
+    //For breaking the line and for the border
     for(int j = 0;j<30; j++)    
     {
         // Border
         for(int i = 0; i <100 ; i++)
         {
 
-            if(i == 99)
+            if(i == 99 || i == 98)      //for y-axis border 
             {
-                *(scr +j*100 + i-1) = 178; //scr[j][i-1] = '@';   //boarder of the line 
+                *(scr +j*100 + i-1) = 178; //scr[j][i-1] = ' ';   //boarder of the line 
                 *(scr +j*100 + i) = '\n';
 
             }
-            else if(i == 0 || j == 0 || j==29)
+            else if(i == 0 || i == 1 || j == 0 || j==29)    // for x-axis border
             {
                 *(scr +j*100 + i) = 178;
             }
-            
         }
 
     }
+
+    ///----Adding more complexity----///
     
+    for(int j = 12;j<13; j++)    
+    {
+        for(int i = 30; i <70 ; i++)
+        {
+            if(*(scr +j*100 + i) != '$')
+            {
+                *(scr +j*100 + i) = 178;
+            }
+        }
+
+    }   
+    
+    for(int j = 20;j<21; j++)    
+    {
+        for(int i = 30; i <70 ; i++)
+        {
+            if(*(scr +j*100 + i) != '$')
+            {
+                *(scr +j*100 + i) = 178;
+            }
+        }
+
+    }   
+
+
+
+
+    ///----Rendering the screen----///
+
+    printf("SCORE: %d \n\n", score);
     puts(scr);
-     //puts("\n");
+    //puts("\n");
+}
+
+void points()
+{
+    int x1 =0;
+    int y1 =0;
+    for(;;)         // loop will continue until it will get  a free space
+    {
+        x1 = randomRange(98,2);
+        y1 = randomRange(28,2);
+        if( screen[y1][x1] == ' '&& x1%2 == 0)  // x1 is mod by 2 beacuse snake head is not taking 
+        {                                       // odd position in x axis 
+            break;
+        }
+    }
+
+    screen[y1][x1] = '$';
 }
 
 
@@ -198,3 +294,15 @@ int clamp(int n,int max, int min)
     return n;
     
 }
+
+int randomRange(int max, int min )
+{
+    return (rand() % (max - min + 1) + min);
+}
+
+void MaximizeOutputWindow(void)
+{
+    HWND consoleWindow = GetConsoleWindow(); // This gets the value Windows uses to identify your output window 
+    ShowWindow(consoleWindow, SW_MAXIMIZE); // this mimics clicking on its' maximize button
+}
+
