@@ -28,6 +28,7 @@ int main ()
 {
     MaximizeOutputWindow();
 
+
     Start();
     Update();
 
@@ -157,7 +158,7 @@ void Update()
     //---- LOOP SCREEN ----//
 
         Render(*screen);   // Not passing address because of puts function error
-        Sleep(40);
+        Sleep(20);
         system("cls");
     }   
 
