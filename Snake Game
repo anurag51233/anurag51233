@@ -52,8 +52,8 @@ void Update()
     int x,y;
     int x1=2;
     int y1=0;
-    int px[100] = {0};
-    int py[100] = {0};
+    int px[80] = {0};
+    int py[80] = {0};
     int count = 0;
     int Ctail = 1;
 
@@ -67,7 +67,6 @@ void Update()
     
     //----CODE----//
         
-        Render(*screen);   // Not passing address because of puts function error
         if(count >= Ctail)
         {
             count = 0;
@@ -157,7 +156,8 @@ void Update()
 
     //---- LOOP SCREEN ----//
 
-        Sleep(10);
+        Render(*screen);   // Not passing address because of puts function error
+        Sleep(40);
         system("cls");
     }   
 
@@ -304,4 +304,3 @@ void MaximizeOutputWindow(void)
     HWND consoleWindow = GetConsoleWindow(); // This gets the value Windows uses to identify your output window 
     ShowWindow(consoleWindow, SW_MAXIMIZE); // this mimics clicking on its' maximize button
 }
-
