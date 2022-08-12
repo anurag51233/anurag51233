@@ -1,0 +1,272 @@
+#include<stdio.h>
+#include<math.h>
+#include<conio.h>
+#include<windows.h>
+#include <stdlib.h>
+
+
+char Move();
+void Start();
+void Update();
+void Render(char *scr);
+void points();
+
+
+int clamp(int n, int max, int min);
+int randomRange(int max, int min );
+void MaximizeOutputWindow(void);
+
+
+char screen[50][100] = {0};    // Here (x,y) = (100,50)  snake screen = (100,30)
+int score = 0;
+
+
+
+
+
+int main ()
+{
+    MaximizeOutputWindow();
+
+    Start();
+    Update();
+
+    getch();
+    getch();
+
+}
+
+void Start()
+{
+    for(int j = 0;j<30; j++)    
+    {
+        for(int i = 0; i <100 ; i++)
+        {
+            screen[j][i] = ' ';
+
+        }
+    }
+    Render(*screen);
+}
+
+
+void Update()
+{
+    int x,y;        //head next position
+    int x1=2;          //direction
+    int y1=0;
+
+
+    x=50;
+    y=15;
+
+    points();         //  initial point   //
+
+    for(;;)       ///----inifinite loop ----///
+    {   
+    
+    //----CODE----//
+      
+        //56
+        screen[y][x] = ' '; //  making tail disappearing  
+        
+
+        //Type 1
+
+        switch(Move())
+        {
+
+            case 'd':
+                                 //  when opposite key is pressed
+                x1 = 2;        //for side move only add y1 = 0;  && x = 0;
+                y1 = 0;
+                
+            
+
+            break;
+
+            case 'a':
+          
+                x1 = -2;
+                y1 = 0;
+            
+
+            break;  
+    
+            case 'w':
+         
+                y1 = -1;
+                x1 = 0;
+            
+            break;
+
+            case 's':
+          
+                y1 = 1;
+                x1 = 0;
+            
+
+            break;  
+       
+   
+       
+        }
+    
+        x += x1;    //x = x+ x1;
+        y += y1;
+        //58
+       
+        screen[y][x] = 'o';
+
+    //---- LOOP SCREEN ----//
+
+        Render(*screen);   // Not passing address because of puts function error
+        Sleep(50);
+        system("cls");
+    }   
+
+}
+
+
+
+
+/// ----- LIBRARY ------ ///
+
+// For rendering screen and boarders
+void Render(char scr[])
+{ 
+
+
+    //For breaking the line and for the border
+    for(int j = 0;j<30; j++)    
+    {
+        // Border
+        for(int i = 0; i <100 ; i++)
+        {
+
+            if(i == 99 || i == 98)      //for y-axis border 
+            {
+                //*(scr +j*100 + i-1) = 178; //scr[j][i-1] = ' ';   //boarder of the line 
+                scr[j*100 + i-1] = 178; //scr[j][i-1] = ' ';   //boarder of the line 
+                //*(scr +j*100 + i) = '\n';  //for breaking the line when the border ends
+                scr [j*100 + i] = '\n';  //for breaking the line when the border ends
+
+            }
+            else if(i == 0 || i == 1 || j == 0 || j==29)    // for x-axis border
+            {
+                *(scr +j*100 + i) = 178;
+            }
+        }
+
+    }
+
+    ///----Adding more complexity----///
+    
+    //for(int j = 12;j<13; j++)    
+    //{
+    //    for(int i = 30; i <70 ; i++)
+    //    {
+    //        if(*(scr +j*100 + i) != '$')
+    //        {
+    //            *(scr +j*100 + i) = 178;
+    //        }
+    //    }
+//
+    //}   
+    //
+    //for(int j = 20;j<21; j++)    
+    //{
+    //    for(int i = 30; i <70 ; i++)
+    //    {
+    //        if(*(scr +j*100 + i) != '$')
+    //        {
+    //            *(scr +j*100 + i) = 178;
+    //        }
+    //    }
+//
+    //}   
+
+
+
+
+    ///----Rendering the screen----///
+
+    printf("SCORE: %d \n\n", score);
+    puts(scr);
+    //puts("\n");
+}
+
+void points()
+{
+    int x1 =0;
+    int y1 =0;
+    for(;;)         // loop will continue until it will get  a free space
+    {
+        x1 = randomRange(98,2);
+        y1 = randomRange(28,2);
+        if( screen[y1][x1] == ' '&& x1%2 == 0)  // x1 is mod by 2 beacuse snake head is not taking 
+        {                                       // odd position in x axis 
+            break;
+        }
+    }
+
+    screen[y1][x1] = '$';
+}
+
+
+// Input method
+char Move(){
+        
+    if(kbhit()) 
+    {
+        switch(getch())
+        {
+
+            case 'd':
+            return 'd';
+            break;
+
+            case 'a':
+            return 'a';
+            break;  
+    
+            case 'w':
+            return 'w';
+            break;
+
+            case 's':
+            return 's';
+            break;  
+       
+   
+       
+        }
+    }
+
+    return ' ';
+}
+
+int clamp(int n,int max, int min)
+{
+    if(n>max)
+    {
+        return max;
+    }
+    else if (n<min)
+    {
+        return min;
+    }
+    return n;
+    
+}
+
+int randomRange(int max, int min )
+{
+    return (rand() % (max - min + 1) + min);
+}
+
+void MaximizeOutputWindow(void)
+{
+    HWND consoleWindow = GetConsoleWindow(); // This gets the value Windows uses to identify your output window 
+    ShowWindow(consoleWindow, SW_MAXIMIZE); // this mimics clicking on its' maximize button
+}
