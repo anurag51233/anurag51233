@@ -7,8 +7,7 @@
 
 char Move();
 void Start();
-void Update();
-void Tail(int x,int y);
+void Update(); 
 void Render(char *scr);
 void points();
 
@@ -53,8 +52,8 @@ void Update()
     int x,y;
     int x1=2;
     int y1=0;
-    int px[20] = {0};
-    int py[20] = {0};
+    int px[100] = {0};
+    int py[100] = {0};
     int count = 0;
     int Ctail = 1;
 
@@ -68,6 +67,7 @@ void Update()
     
     //----CODE----//
         
+        Render(*screen);   // Not passing address because of puts function error
         if(count >= Ctail)
         {
             count = 0;
@@ -157,8 +157,7 @@ void Update()
 
     //---- LOOP SCREEN ----//
 
-        Render(*screen);   // Not passing address because of puts function error
-        Sleep(50);
+        Sleep(10);
         system("cls");
     }   
 
@@ -184,7 +183,7 @@ void Render(char *scr)
             if(i == 99 || i == 98)      //for y-axis border 
             {
                 *(scr +j*100 + i-1) = 178; //scr[j][i-1] = ' ';   //boarder of the line 
-                *(scr +j*100 + i) = '\n';
+                *(scr +j*100 + i) = '\n';  //for breaking the line when the border ends
 
             }
             else if(i == 0 || i == 1 || j == 0 || j==29)    // for x-axis border
