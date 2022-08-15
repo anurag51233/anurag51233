@@ -27,8 +27,6 @@ int score = 0;
 int main ()
 {
     MaximizeOutputWindow();
-
-
     Start();
     Update();
 
@@ -131,10 +129,8 @@ void Update()
         x += x1;
         y += y1;
 
-        x = clamp(x,99,0);                  //Out
-        y = clamp(y,29,0);                  //Out
 
-        if(screen[y][x] == '$' )            //game over
+        if(screen[y][x] == '*' )            //game over
         {       
             score++;                        //increase score
             Ctail++;        
@@ -158,7 +154,7 @@ void Update()
     //---- LOOP SCREEN ----//
 
         Render(*screen);   // Not passing address because of puts function error
-        Sleep(20);
+        Sleep(40);
         system("cls");
     }   
 
@@ -201,10 +197,9 @@ void Render(char *scr)
     {
         for(int i = 30; i <70 ; i++)
         {
-            if(*(scr +j*100 + i) != '$')
-            {
+            
                 *(scr +j*100 + i) = 178;
-            }
+            
         }
 
     }   
@@ -213,10 +208,9 @@ void Render(char *scr)
     {
         for(int i = 30; i <70 ; i++)
         {
-            if(*(scr +j*100 + i) != '$')
-            {
+            
                 *(scr +j*100 + i) = 178;
-            }
+            
         }
 
     }   
@@ -245,7 +239,7 @@ void points()
         }
     }
 
-    screen[y1][x1] = '$';
+    screen[y1][x1] = '*';
 }
 
 
